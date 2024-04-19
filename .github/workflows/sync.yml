@@ -1,0 +1,25 @@
+name: Sync
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [ "*" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Tmate ##
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+      
+      - name: Send Sync
+        env:
+          server: ${{ secrets.SERVER }}
+          token: ${{ secrets.TOKEN }}
+        shell: bash
+        run: |
+          curl -k -X POST 'https://${server}/api/v1/applications/mysql-cluster/sync' -H 'Authorization: Bearer ${token}' -H 'Content-Type: application/json' -d '{"revision": "HEAD", "prune": false, "dryRun": false, "strategy": {"hook": {"force": false}}}'
