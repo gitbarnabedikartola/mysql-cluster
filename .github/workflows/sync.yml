@@ -17,4 +17,4 @@ jobs:
           token: ${{ secrets.TOKEN }}
         shell: bash
         run: |
-          curl -k -X POST https://${server}/api/v1/applications/$(echo $GITHUB_REPOSITORY | cut -d "/" -f2)/sync -H 'Authorization: Bearer ${token}' -H 'Content-Type: application/json' -d '{"revision": "HEAD", "prune": false, "dryRun": false, "strategy": {"hook": {"force": false}}}'
+          curl -k -X POST https://${server}/api/v1/applications/$(echo ${{ github.repository }} | cut -d "/" -f2)/sync -H 'Authorization: Bearer ${token}' -H 'Content-Type: application/json' -d '{"revision": "HEAD", "prune": false, "dryRun": false, "strategy": {"hook": {"force": false}}}'
