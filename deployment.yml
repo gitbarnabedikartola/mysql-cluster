@@ -29,7 +29,7 @@ metadata:
   name: mysql-cluster
   namespace: otpx
 spec:
-  instances: 4
+  instances: 3
   tlsUseSelfSigned: true
   router:
     instances: 1
