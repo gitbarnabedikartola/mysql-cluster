@@ -2,23 +2,23 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: xpto
+  name: otpx
 ---
 # Source: mysql-innodbcluster/templates/service_account_cluster.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: mysql-cluster-sa
-  namespace: xpto
+  namespace: otpx
 ---
 # Source: mysql-innodbcluster/templates/cluster_secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-cluster-secret
-  namespace: xpto
+  namespace: otpx
 stringData:
-  rootUser: "xpto"
+  rootUser: "otpx"
   rootHost: "%"
   rootPassword: "otpx"
 ---
@@ -27,7 +27,7 @@ apiVersion: mysql.oracle.com/v2
 kind: InnoDBCluster
 metadata:
   name: mysql-cluster
-  namespace: xpto
+  namespace: otpx
 spec:
   instances: 3
   tlsUseSelfSigned: true
