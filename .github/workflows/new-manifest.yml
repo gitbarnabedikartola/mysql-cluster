@@ -40,11 +40,7 @@ jobs:
             cancel
           fi
           
-          mkdir "$namespace"
-          
-          ls -lha
-          
-          cp "template/*" "$namespace"
+          cp "template" "$namespace"
           
           ## Alterações no deployment.yml
           # Seta nome do namespace no kind: Namespace
