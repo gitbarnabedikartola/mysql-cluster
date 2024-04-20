@@ -37,7 +37,7 @@ jobs:
           fi
           
           mkdir -p "mysql-cluster/$namespace"
-          cp "template/*" "mysql-cluster/$namespace"
+          cp "mysql-cluster/template/*" "mysql-cluster/$namespace"
           
           ## Alterações no deployment.yml
           # Seta nome do namespace no kind: Namespace
