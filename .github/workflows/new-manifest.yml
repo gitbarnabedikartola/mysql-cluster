@@ -19,7 +19,7 @@ jobs:
           mysqlVersion: 8.3.1
           rootUser: otpx
           rootPassword: otpx
-          rootHost: %
+          #rootHost: %
           memory: 2G
           cpu: 2
         shell: bash
@@ -50,8 +50,8 @@ jobs:
           sed -i '/stringData:/!b; :a; n; /^\s\{2\}rootUser:/ s/:.*/'": \"$rootUser\""'/; ta' "mysql-cluster/$namespace/deployment.yml"
           # Seta RootPassword
           sed -i "s/rootPassword:.*/rootPassword: \"$rootPassword\"/" "mysql-cluster/$namespace/deployment.yml"
-          # Seta RootHost
-          sed -i "s/rootHost:.*/rootHost: \"$rootHost\"/" "mysql-cluster/$namespace/deployment.yml"
+          ## Seta RootHost
+          # sed -i "s/rootHost:.*/rootHost: \"$rootHost\"/" "mysql-cluster/$namespace/deployment.yml"
           # Seta mysqlVersion
           sed -i "s/version:.*/version: $mysqlVersion/" "mysql-cluster/$namespace/deployment.yml"
           # Seta Menory e Cpu limits
