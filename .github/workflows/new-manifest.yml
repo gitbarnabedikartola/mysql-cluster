@@ -12,6 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      ## Tmate ##
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+      
       - name: Make Manifest
         env:
           namespace: otpx
