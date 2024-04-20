@@ -40,7 +40,10 @@ jobs:
             cancel
           fi
           
-          mkdir -p "$namespace"
+          mkdir "$namespace"
+          
+          ls -lha
+          
           cp "template/*" "$namespace"
           
           ## Alterações no deployment.yml
