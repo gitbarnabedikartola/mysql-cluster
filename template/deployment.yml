@@ -2,34 +2,34 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: otpx
+  name: template
 ---
 # Source: mysql-innodbcluster/templates/service_account_cluster.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: mysql-cluster-sa
-  namespace: otpx
+  namespace: template
 ---
 # Source: mysql-innodbcluster/templates/cluster_secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-cluster-secret
-  namespace: otpx
+  namespace: template
 stringData:
-  rootUser: "otpx"
+  rootUser: "template"
   rootHost: "%"
-  rootPassword: "otpx"
+  rootPassword: "template"
 ---
 # Source: mysql-innodbcluster/templates/deployment_cluster.yaml
 apiVersion: mysql.oracle.com/v2
 kind: InnoDBCluster
 metadata:
   name: mysql-cluster
-  namespace: otpx
+  namespace: template
 spec:
-  instances: 4
+  instances: 3
   tlsUseSelfSigned: true
   router:
     instances: 1
@@ -55,11 +55,11 @@ spec:
     - name: mysql
       resources:
         limits:
-          memory: "1Gi"  # adapt to your needs
-          cpu: "1"      # adapt to your needs
+          memory: "1Gi"
+          cpu: "1"
         requests:
-          memory: "0Mi"  # adapt to your needs
-          cpu: "0"      # adapt to your needs
+          memory: "0Mi"
+          cpu: "0"
     tolerations:
       - key: "node-role.kubernetes.io/master"
         operator: "Equal"
@@ -123,7 +123,6 @@ spec:
   #      sink:
   ##       rawConfig:
 
-
   #keyring:
   #  file:
   #    fileName:
@@ -148,20 +147,7 @@ spec:
   #      management: "<identifier>-management.kms.<region>.oraclecloud.com"
   #      vaults: "vaults.<region>.oci.oraclecloud.com"
   #      secrets: "secrets.vaults.<region>.oci.oraclecloud.com"
-        
-      
 
-  #podSpec:
-  #  containers:
-  #  - name: mysql
-  #    resources:
-  #      requests:
-  #        memory: "2048Mi"  # adapt to your needs
-  #        cpu: "1800m"      # adapt to your needs
-  #      limits:
-  #        memory: "8192Mi"  # adapt to your needs
-  #        cpu: "3600m"      # adapt to your needs
-  #
   #podAnnotations:
   #podLabels:
 
@@ -170,7 +156,6 @@ spec:
   #    [mysqld]
   #    core_file
   #    local_infile=off
-
 
   #datadirVolumeClaimTemplate:
   #  accessModes:
@@ -240,7 +225,7 @@ spec:
   #        prefix:
   #        config:
   #        containerName:
-  #
+
   #backupSchedules:
   #- name: schedule-ref
   #  schedule: "*/1 * * * *"

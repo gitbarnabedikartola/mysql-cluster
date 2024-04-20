@@ -1,0 +1,77 @@
+name: Make Manifest
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [ "*" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Make Manifest
+        env:
+          namespace: otpx
+          storageSize: 1G
+          mysqlVersion: 8.3.1
+          rootUser: otpx
+          rootPassword: otpx
+          rootHost: %
+          memory: 2G
+          cpu: 2
+        shell: bash
+        run: |
+          cancel () {
+            echo "Manifesto $namespace já existe."
+            echo "SAINDO...."
+            curl -s -H "Authorization: token ${{ github.token }}" \
+            -X POST "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel"
+            sleep infinity
+          }
+          # Cacelar caso já exista o Manifesto
+          if [ -d "mysql-cluster/$namespace" ];then
+            cancel
+          fi
+          
+          mkdir -p "mysql-cluster/$namespace"
+          cp "template/*" "mysql-cluster/$namespace"
+          
+          ## Alterações no deployment.yml
+          # Seta nome do namespace no kind: Namespace
+          sed -i "/name: template/s/name: template/name: $namespace/" "mysql-cluster/$namespace/deployment.yml"
+          # Seta namespace de todos os outros
+          sed -i "s/namespace:.*/namespace: $namespace/g" "mysql-cluster/$namespace/deployment.yml"
+          # Seta StorageSize
+          sed -i '/requests:/!b; :a; n; /^\s\{8\}storage:/ s/:.*/'": $storageSize"'/; ta' "mysql-cluster/$namespace/deployment.yml"
+          # Seta RootUser
+          sed -i '/stringData:/!b; :a; n; /^\s\{2\}rootUser:/ s/:.*/'": \"$rootUser\""'/; ta' "mysql-cluster/$namespace/deployment.yml"
+          # Seta RootPassword
+          sed -i "s/rootPassword:.*/rootPassword: \"$rootPassword\"/" "mysql-cluster/$namespace/deployment.yml"
+          # Seta RootHost
+          sed -i "s/rootHost:.*/rootHost: \"$rootHost\"/" "mysql-cluster/$namespace/deployment.yml"
+          # Seta mysqlVersion
+          sed -i "s/version:.*/version: $mysqlVersion/" "mysql-cluster/$namespace/deployment.yml"
+          # Seta Menory e Cpu limits
+          sed -i '/limits:/!b; :a; n; /^\s\{10\}memory:/ s/:.*/: '\"$memory\"'/; /^\s\{10\}cpu:/ s/:.*/: '\"$cpu\"'/; ta' "mysql-cluster/$namespace/deployment.yml"
+          
+          ## Aletação no remove-cluster.sh
+          sed -i "s/nameSpace=.*/nameSpace=$namespace/" "mysql-cluster/$namespace/remove-cluster.sh"
+          
+          ## Cria arquivo de sync
+          mv sync mysql-cluster/.github/workflows/sync-$namespace.yml
+          
+      - name: Update github
+        run: |
+          git add --all
+          git config --local user.email "${{ secrets.GIT_USER }}@users.noreply.github.com"
+          git config --local user.name "${{ secrets.GIT_USER }}"
+          if [ -n "$(git commit -m "new version" -a | grep "nothing to commit")" ];then exit 0; fi
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
