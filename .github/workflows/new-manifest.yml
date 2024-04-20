@@ -40,7 +40,7 @@ jobs:
             cancel
           fi
           
-          cp "template" "$namespace"
+          cp -r "template" "$namespace"
           
           ## Alterações no deployment.yml
           # Seta nome do namespace no kind: Namespace
