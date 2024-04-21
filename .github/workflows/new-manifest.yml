@@ -20,7 +20,7 @@ jobs:
         env:
           namespace: otpx
           storageSize: 1G
-          mysqlVersion: 8.3.1
+          mysqlVersion: 8.3.0
           rootUser: otpx
           rootPassword: otpx
           #rootHost: %
@@ -64,7 +64,7 @@ jobs:
           sed -i "s/nameSpace=.*/nameSpace=$namespace/" "$namespace/remove-cluster.sh"
           
           ## Cria arquivo de sync
-          #mv template/sync .github/workflows/sync-$namespace.yml
+          mv template/sync .github/workflows/sync-$namespace.yml
           
           echo "namespace=$namespace" >> $GITHUB_ENV
           
@@ -74,9 +74,4 @@ jobs:
           git config --local user.email "${{ secrets.GIT_USER }}@users.noreply.github.com"
           git config --local user.name "${{ secrets.GIT_USER }}"
           if [ -n "$(git commit -m "create $namespace" -a | grep "nothing to commit")" ];then exit 0; fi
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          git push
