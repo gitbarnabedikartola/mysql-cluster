@@ -24,18 +24,18 @@ jobs:
           cpu: 2
           private: false
           token: ${{ secrets.TOKEN_PUSH }}
-          reponame: mysql-cluster-$namespace
           owner: ${{ github.repository_owner }}
         shell: bash
         run: |
           cancel () {
-            echo "Manifesto $namespace já existe."
+            echo "Manifesto $owner/$reponame já existe."
             echo "SAINDO...."
             curl -s -H "Authorization: token ${{ github.token }}" \
             -X POST "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel"
             sleep infinity
           }
           
+          reponame=mysql-cluster-$namespace
           
           REPO_CHECK=$(curl -H "Authorization: token $token" -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/$owner/$reponame)
           # Checa se o código de status HTTP é 404 (Não encontrado)
