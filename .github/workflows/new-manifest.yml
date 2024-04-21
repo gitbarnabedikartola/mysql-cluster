@@ -42,8 +42,8 @@ jobs:
           if [ "$REPO_CHECK" -eq 404 ]; then
             echo "Repositório não existe. Criando repositório..."
             curl -H "Authorization: token $token" -d "{\"name\":\"$reponame\", \"private\":$private}" https://api.github.com/user/repos
-          else
-            cancel
+          # else
+            # cancel
           fi
           
           
