@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      workflows: write
     steps:
       - uses: actions/checkout@v3
       
@@ -35,6 +37,10 @@ jobs:
           if [ -d "$namespace" ];then
             cancel
           fi
+          
+          # sudo rm -r $(echo ${{ github.repository }} | cut -d "/" -f2)
+          # git clone https://github.com/${{ github.repository }}
+          # cd $(echo ${{ github.repository }} | cut -d "/" -f2)
           
           cp -r "template" "$namespace"
           
@@ -64,15 +70,15 @@ jobs:
           
           echo "namespace=$namespace" >> $GITHUB_ENV
       
-      ## Tmate ##
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # ## Tmate ##
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
           
       - name: Update github
         run: |
           git add --all
-          git config --local user.email "${{ secrets.GIT_USER }}@users.noreply.github.com"
-          git config --local user.name "${{ secrets.GIT_USER }}"
+          git config --local user.email "gitbarnabedikartola@users.noreply.github.com"
+          git config --local user.name "gitbarnabedikartola"
           if [ -n "$(git commit -m "create $namespace" -a | grep "nothing to commit")" ];then exit 0; fi
 
       - name: Push changes
