@@ -64,7 +64,7 @@ jobs:
           sed -i "s/nameSpace=.*/nameSpace=$namespace/" "$namespace/remove-cluster.sh"
           
           ## Cria arquivo de sync
-          #mv template/sync .github/workflows/sync-$namespace.yml
+          mv template/sync .github/workflows/sync-$namespace.yml
           
           echo "namespace=$namespace" >> $GITHUB_ENV
           
