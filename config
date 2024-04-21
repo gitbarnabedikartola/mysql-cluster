@@ -1,0 +1,14 @@
+namespace=otpx
+storageSize=1G
+mysqlVersion=8.3.0
+rootUser=otpx
+rootPassword=otpx
+#rootHost=%
+memory=2G
+cpu=2
+private=false
+# deixe owner em branco para usar o mesmo owner de repositorio atual.
+owner=
+
+# evite editar, nome padrão do repo e aplicação.
+repoBaseName=mysql-cluster

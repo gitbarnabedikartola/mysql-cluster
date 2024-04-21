@@ -14,17 +14,17 @@ jobs:
       
       - name: Make Manifest
         env:
-          namespace: otpx
-          storageSize: 1G
-          mysqlVersion: 8.3.0
-          rootUser: otpx
-          rootPassword: otpx
-          #rootHost: %
-          memory: 2G
-          cpu: 2
-          private: false
+          # namespace: otpx
+          # storageSize: 1G
+          # mysqlVersion: 8.3.0
+          # rootUser: otpx
+          # rootPassword: otpx
+          # #rootHost: %
+          # memory: 2G
+          # cpu: 2
+          # private: false
           token: ${{ secrets.TOKEN_PUSH }}
-          owner: ${{ github.repository_owner }}
+          # owner: ${{ github.repository_owner }}
         shell: bash
         run: |
           cancel () {
@@ -35,23 +35,25 @@ jobs:
             sleep infinity
           }
           
-          reponame=mysql-cluster-$namespace
+          # Importar e substituir variaveis
+          source config
+          owner=${owner:-${{ github.repository_owner }}}
+          reponame=$repoBaseName-$namespace
           
+          # Criar novo repositorio
           REPO_CHECK=$(curl -H "Authorization: token $token" -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/$owner/$reponame)
           # Checa se o código de status HTTP é 404 (Não encontrado)
           if [ "$REPO_CHECK" -eq 404 ]; then
             echo "Repositório não existe. Criando repositório..."
             curl -H "Authorization: token $token" -d "{\"name\":\"$reponame\", \"private\":$private}" https://api.github.com/user/repos
-          # else
-            # cancel
+          else
+            cancel
           fi
           
-          
-          # cd ..
-          # sudo rm -r $(echo ${{ github.repository }} | cut -d "/" -f2)
+          # Clonar novo repositorio
           git clone https://github.com/$owner/$reponame
           
-          
+          # copiar template para o novo repositorio
           cp -r template/* $reponame/
           
           ## Alterações no deployment.yml
