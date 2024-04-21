@@ -36,6 +36,7 @@ jobs:
             cancel
           fi
           
+          cd ..
           sudo rm -r $(echo ${{ github.repository }} | cut -d "/" -f2)
           git clone https://github.com/${{ github.repository }}
           cd $(echo ${{ github.repository }} | cut -d "/" -f2)
