@@ -72,26 +72,27 @@ jobs:
           # Seta Menory e Cpu limits
           sed -i '/limits:/!b; :a; n; /^\s\{10\}memory:/ s/:.*/: '\"$memory\"'/; /^\s\{10\}cpu:/ s/:.*/: '\"$cpu\"'/; ta' "$reponame/deployment.yml"
           
-          # ## Aletação no remove-cluster.sh
-          # sed -i "s/nameSpace=.*/nameSpace=$namespace/" "$reponame/remove-cluster.sh"
+          ## Aletação no remove-cluster.sh
+          sed -i "s/nameSpace=.*/nameSpace=$namespace/" "$reponame/remove-cluster.sh"
           
-          # ## Cria arquivo de sync
-          # mkdir -p $reponame/.github/workflows/
-          # sed "s/name:.*/name: Sync $namespace/" "$reponame/sync"
-          # mv "$namespace/sync" "$reponame/.github/workflows/sync-$reponame.yml"
+          ## Cria arquivo de sync
+          mkdir -p $reponame/.github/workflows/
+          sed "s/name:.*/name: Sync $namespace/" "$reponame/sync"
+          mv "$reponame/sync" "$reponame/.github/workflows/sync.yml"
           
-          # echo "namespace=$namespace" >> $GITHUB_ENV
+          echo "reponame=$reponame" >> $GITHUB_ENV
+          echo "owner=$owner" >> $GITHUB_ENV
       
-      ## Tmate ##
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # ## Tmate ##
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
           
-      # - name: Update github
-      #   run: |
-      #     cd $reponame
-      #     git add --all
-      #     git config --local user.email "gitbarnabedikartola@users.noreply.github.com"
-      #     git config --local user.name "gitbarnabedikartola"
-      #     if [ -n "$(git commit -m "create $namespace" -a | grep "nothing to commit")" ];then exit 0; fi
-      #     git push https://${{ secrets.token_PUSH }}@github.com/${{ github.repository }}
+      - name: Update github
+        run: |
+          cd $reponame
+          git add --all
+          git config --local user.email "gitbarnabedikartola@users.noreply.github.com"
+          git config --local user.name "gitbarnabedikartola"
+          if [ -n "$(git commit -m "create $namespace" -a | grep "nothing to commit")" ];then exit 0; fi
+          git push https://${{ secrets.token_PUSH }}@github.com/$owner/$reponame
 
